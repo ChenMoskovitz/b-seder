@@ -8,7 +8,8 @@ import {
     Trophy,
     Sparkles,
     LayoutGrid,
-    Pencil
+    Pencil,
+    GripVertical
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -543,7 +544,7 @@ export default function App() {
                                             </span>
                                         </div>
 
-                                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                        <div className="flex items-center gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all">
                                             <button
                                                 onClick={() => renameTask(task.id)}
                                                 className="p-3 text-slate-300 hover:text-blue-500 hover:bg-blue-50 rounded-2xl transition-all"
