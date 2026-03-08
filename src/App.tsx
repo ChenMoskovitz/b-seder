@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
+
 type Task = {
     id: string;
     text: string;
@@ -91,6 +92,7 @@ export default function App() {
     const [activeRoomId, setActiveRoomId] = useState<string | null>(null);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
     const [newRoomName, setNewRoomName] = useState('');
+    const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
 
     useEffect(() => {
         localStorage.setItem('bseder-data', JSON.stringify(rooms));
@@ -268,6 +270,27 @@ export default function App() {
 
         setNewRoomName('');
         setIsAddingRoom(false);
+    };
+
+    const moveTask = (draggedTaskId: string, targetTaskId: string) => {
+        if (!activeRoomId || draggedTaskId === targetTaskId) return;
+
+        setRooms((prev) =>
+            prev.map((room) => {
+                if (room.id !== activeRoomId) return room;
+
+                const tasks = [...room.tasks];
+                const fromIndex = tasks.findIndex((task) => task.id === draggedTaskId);
+                const toIndex = tasks.findIndex((task) => task.id === targetTaskId);
+
+                if (fromIndex === -1 || toIndex === -1) return room;
+
+                const [movedTask] = tasks.splice(fromIndex, 1);
+                tasks.splice(toIndex, 0, movedTask);
+
+                return { ...room, tasks };
+            })
+        );
     };
 
     return (
@@ -473,14 +496,26 @@ export default function App() {
                                 {activeRoom.tasks.map((task) => (
                                     <div
                                         key={task.id}
-                                        className={`p-7 flex items-center justify-between group hover:bg-white/70 transition-all ${
+                                        draggable
+                                        onDragStart={() => setDraggedTaskId(task.id)}
+                                        onDragEnd={() => setDraggedTaskId(null)}
+                                        onDragOver={(e) => e.preventDefault()}
+                                        onDrop={() => {
+                                            if (draggedTaskId) {
+                                                moveTask(draggedTaskId, task.id);
+                                            }
+                                        }}
+                                        className={`p-7 flex items-center justify-between group hover:bg-white/70 transition-all cursor-grab active:cursor-grabbing ${
                                             task.completed ? 'task-completed' : ''
-                                        }`}
+                                        } ${draggedTaskId === task.id ? 'opacity-50 scale-[0.98]' : ''}`}
                                     >
                                         <div
                                             className="flex items-center gap-5 cursor-pointer flex-1"
                                             onClick={() => toggleTask(task.id)}
                                         >
+                                            <div className="text-slate-300 mr-1">
+                                                <GripVertical size={18} />
+                                            </div>
                                             <div
                                                 className={`w-8 h-8 rounded-xl flex items-center justify-center border-2 transition-all duration-300 ${
                                                     task.completed
