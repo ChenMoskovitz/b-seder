@@ -355,25 +355,29 @@ export default function App() {
                                             onClick={() => setActiveRoomId(room.id)}
                                             className={`group room-tile relative flex flex-col justify-between aspect-square p-6 rounded-[2.5rem] text-white ${roomColor}`}
                                         >
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    deleteRoom(room.id);
-                                                }}
-                                                className="absolute top-4 right-4 p-2 bg-white/20 rounded-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity"
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
+                                            <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
 
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    renameRoom(room.id);
-                                                }}
-                                                className="absolute top-4 right-16 p-2 bg-white/20 rounded-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity"
-                                            >
-                                                <Pencil size={16} />
-                                            </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        deleteRoom(room.id);
+                                                    }}
+                                                    className="p-2 bg-white/20 rounded-xl backdrop-blur-md"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        renameRoom(room.id);
+                                                    }}
+                                                    className="p-2 bg-white/20 rounded-xl backdrop-blur-md"
+                                                >
+                                                    <Pencil size={16} />
+                                                </button>
+
+                                            </div>
 
                                             <div>
                                                 <div className="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center mb-3 backdrop-blur-sm">
