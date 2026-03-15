@@ -260,7 +260,7 @@ export default function App() {
                                             onDragOver={(e) => e.preventDefault()}
                                             onDrop={() => draggedRoomId && moveRoom(draggedRoomId, room.id)}
                                             onClick={() => setActiveRoomId(room.id)}
-                                            className={`group relative flex flex-col justify-between aspect-square p-5 rounded-[2.5rem] text-white bg-linear-to-br shadow-lg active:scale-95 transition-all cursor-grab ${room.color || 'from-blue-500 to-indigo-600'}`}
+                                            className={`group relative flex flex-col justify-between aspect-square p-5 rounded-[2.5rem] text-white bg-gradient-to-br shadow-lg active:scale-95 transition-all cursor-grab ${room.color || 'from-blue-500 to-indigo-600'}`}
                                         >
                                             <div className="absolute top-3 right-3 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button onClick={(e) => { e.stopPropagation(); deleteRoom(room.id); }} className="p-2 bg-white/20 rounded-lg backdrop-blur-md"><Trash2 size={14} /></button>
@@ -286,7 +286,7 @@ export default function App() {
                 ) : activeRoom ? (
                     <div className="space-y-8">
                         <div className="flex items-center gap-4">
-                            <div className={`w-14 h-14 rounded-2xl bg-linear-to-br ${activeRoom.color} text-white flex items-center justify-center shadow-lg`}>
+                            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${activeRoom.color} text-white flex items-center justify-center shadow-lg`}>
                                 <Home size={28} />
                             </div>
                             <div className="flex-1">
