@@ -169,6 +169,27 @@ export default function App() {
         } : r));
     };
 
+    const deleteTask = (taskId: string) => {
+        if (!activeRoomId || !window.confirm("Delete this task?")) return;
+        setRooms(prev => prev.map(r => r.id === activeRoomId
+            ? { ...r, tasks: r.tasks.filter(t => t.id !== taskId) }
+            : r
+        ));
+    };
+
+    const renameTask = (taskId: string) => {
+        if (!activeRoomId) return;
+        const currentRoom = rooms.find(r => r.id === activeRoomId);
+        const task = currentRoom?.tasks.find(t => t.id === taskId);
+        const newText = window.prompt('Edit task:', task?.text);
+
+        if (newText?.trim()) {
+            setRooms(prev => prev.map(r => r.id === activeRoomId ? {
+                ...r, tasks: r.tasks.map(t => t.id === taskId ? { ...t, text: newText.trim() } : t)
+            } : r));
+        }
+    };
+
     const addRoom = () => {
         if (!newRoomName.trim()) return;
         setRooms(prev => [...prev, {
@@ -308,17 +329,45 @@ export default function App() {
                             <div className="divide-y divide-slate-50">
                                 {activeRoom.tasks.map((task) => (
                                     <div
-                                        key={task.id} draggable onDragStart={() => setDraggedTaskId(task.id)}
+                                        key={task.id}
+                                        draggable
+                                        onDragStart={() => setDraggedTaskId(task.id)}
                                         onDragOver={(e) => e.preventDefault()}
                                         onDrop={() => draggedTaskId && moveTask(draggedTaskId, task.id)}
-                                        className={`p-5 flex items-center justify-between group transition-all ${task.completed ? 'opacity-60' : ''}`}
+                                        className={`p-5 flex items-center justify-between group transition-all active:bg-slate-50 ${task.completed ? 'opacity-60' : ''}`}
                                     >
-                                        <div className="flex items-center gap-4 cursor-pointer flex-1" onClick={() => toggleTask(task.id)}>
-                                            <GripVertical size={16} className="text-slate-300" />
-                                            <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center ${task.completed ? 'bg-green-500 border-green-500' : 'border-slate-200'}`}>
-                                                {task.completed && <CheckCircle2 size={16} className="text-white" />}
+                                        <div className="flex items-center gap-4 flex-1">
+                                            {/* Reorder Handle */}
+                                            <GripVertical size={16} className="text-slate-300 cursor-move" />
+
+                                            {/* Checkbox and Text */}
+                                            <div
+                                                className="flex items-center gap-4 flex-1 cursor-pointer"
+                                                onClick={() => toggleTask(task.id)}
+                                            >
+                                                <div className={`w-6 h-6 shrink-0 rounded-lg border-2 flex items-center justify-center ${task.completed ? 'bg-green-500 border-green-500' : 'border-slate-200'}`}>
+                                                    {task.completed && <CheckCircle2 size={16} className="text-white" />}
+                                                </div>
+                                                <span className={`text-lg leading-tight ${task.completed ? 'line-through text-slate-400 italic' : 'font-bold text-slate-700'}`}>
+                        {task.text}
+                    </span>
                                             </div>
-                                            <span className={`text-lg ${task.completed ? 'line-through text-slate-400 italic' : 'font-bold text-slate-700'}`}>{task.text}</span>
+
+                                            {/* Task Actions: Edit & Delete */}
+                                            <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    onClick={() => renameTask(task.id)}
+                                                    className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                >
+                                                    <Pencil size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => deleteTask(task.id)}
+                                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
